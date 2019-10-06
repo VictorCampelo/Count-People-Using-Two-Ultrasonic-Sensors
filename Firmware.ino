@@ -45,22 +45,35 @@ void loop(void){
 
   // The PING))) is triggered by a HIGH pulse of 2 or more microseconds.
   // Give a short LOW pulse beforehand to ensure a clean HIGH pulse:
- 
-  digitalWrite(TRIGGER, LOW);
+  
+  //sensor ultrasonic 1
+  digitalWrite(HCSR04_1_PIN_TRIG, LOW);
   delayMicroseconds(2);
-  digitalWrite(TRIGGER, HIGH);
+  digitalWrite(HCSR04_1_PIN_TRIG, HIGH);
   delayMicroseconds(10);
-  digitalWrite(TRIGGER, LOW);
+  digitalWrite(HCSR04_1_PIN_TRIG, LOW);
+  //sensor ultrasonic 2
+  digitalWrite(HCSR04_2_PIN_TRIG, LOW);
+  delayMicroseconds(2);
+  digitalWrite(HCSR04_2_PIN_TRIG, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(HCSR04_2_PIN_TRIG, LOW);
 
   // The same pin is used to read the signal from the PING))): a HIGH
   // pulse whose duration is the time (in microseconds) from the sending
   // of the ping to the reception of its echo off of an object.
 
-  duration = pulseIn(ECHO, HIGH);
+  duration1 = pulseIn(HCSR04_1_PIN_ECHO, HIGH);
+  duration2 = pulseIn(HCSR04_2_PIN_ECHO, HIGH);
 
   // convert the time into a distance
-  inches = microsecondsToInches(duration);
-  cm = microsecondsToCentimeters(duration);
+  inches1 = microsecondsToInches(duration1);
+  cm1 = microsecondsToCentimeters(duration1);
+  // convert the time into a distance
+  inches2 = microsecondsToInches(duration2);
+  cm2 = microsecondsToCentimeters(duration2);
+
+  //here we've to define the distances value for the inferences wheter people throuput the door 
 
   Serial.print(inches);
   Serial.print("in, ");
@@ -74,6 +87,9 @@ void loop(void){
   delay(1000);              // wait for a second
   digitalWrite(2, LOW);    // turn the LED off by making the voltage LOW
   delay(1000);              // wait for a second
+
+  //send the number of people in the room
+  //add the appropriates calculations for this approach
 
   sendHeight(cm);
 }
