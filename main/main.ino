@@ -3,9 +3,11 @@
 #include "Arduino.h"
 #include "NewPing.h"
 #include "EventLog.h"
-#include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
+#include <ESP8266WiFi.h> //lib para conectar o wifi do ESP201
+#include <ESP8266WiFiMulti.h>//lib para as funções addAP e  run
+#include <SPI.h>  //protocolo síncrono de dados serial
 
 //max dist_in to trigger echo(in cm)
 #define MAX_DISTANCE 500
@@ -48,6 +50,10 @@
 // Replace with your network credentials
 const char* ssid = "UFPI";
 const char* password = "";
+//porta 5000 do protocolo TCP, deve ser a mesma utilizada pelo servidor
+const uint16_t port = 9999;
+//endereço ip, deve ser o mesmo utilizado pelo servidor
+const char * host = "10.94.15.69";
 ESP8266WebServer server(80);   //instantiate server at port 80 (http port)
 EventLog EventLogger;
 
@@ -67,6 +73,8 @@ int state_in = 0;
 int flag = 0;
 int state_out = 0;
 
+ESP8266WiFiMulti WiFiMulti; //cria uma instância da classe ESP8266WiFiMulti
+IPAddress local_IP(192, 168, 10, 110); //Cria uma instância da classe IPAddress e define o ip do servidor
 
 // Global variables and defines
 
@@ -89,7 +97,8 @@ void setup() {
   pinMode(INSIDE_SR04_ECHO, INPUT);
   pinMode(OUTSIDE_SR04_TRIG, OUTPUT);
   pinMode(OUTSIDE_SR04_ECHO, INPUT);
-  connectWifi();
+  //connectWifi();
+  wifiMultiConecte();
   digitalWrite(BUZZER, HIGH);
   delay(50);
   digitalWrite(BUZZER, LOW);
@@ -104,6 +113,9 @@ void setup() {
   int midOut = 0;
   in = 90;
   out = 90;
+
+  //this code above is a test to create erros ration values
+
   //in = Inside_SR04.ping_cm();
   //out = Outside_SR04.ping_cm();
   //  while(i < 1000){
@@ -144,7 +156,8 @@ void loop() {
   Serial.println(dist_in);
   Serial.print("Sensor out:");
   Serial.println(dist_out);
-  server.handleClient();
+  //this fuction above not is more necessary yet
+  //server.handleClient();
 
   if (dist_in < in && dist_in < inP && dist_in < inL) {
     state_in = 1;
@@ -177,6 +190,7 @@ void loop() {
           digitalWrite(BUZZER, LOW);
           Serial.print("count:");
           Serial.println(count);
+          sendDataToDatabase(count);
           delay(1000); // pause for 1/2 second
         }
         return;
@@ -224,6 +238,7 @@ void loop() {
           digitalWrite(BUZZER, LOW);
           Serial.print("count:");
           Serial.println(count);
+          sendDataToDatabase(count);
           delay(1000); // pause for 1/2 second
         }
         return;
@@ -238,6 +253,30 @@ void loop() {
       yield();
     }
   }
+}
+
+void sendDataToDatabase(int count){
+  //inicializa a lib do cliente
+  WiFiClient client;
+  if (client.connect(host, port)){    //Envioda temperatura atual
+      client.println(" ");
+      client.println("1"); //id
+      client.println(count); //NumPeople
+      client.println("fim");
+   }
+}
+
+void wifiMultiConnect(){
+  //configura modo como estação
+  WiFi.mode(WIFI_STA);
+  
+  //parametros: WiFi.softAP(nomeDoAccessPoint, senhaRede)
+  //redeVisivel: a rede pode ou não aparecer para outros serviços 
+  WiFiMulti.addAP("UFPI", "");
+  
+  //enquanto o cliente não estiver conectado, escreve "."
+  while (WiFiMulti.run() != WL_CONNECTED) 
+   Serial.print(".");  
 }
 
 void connectWifi() {
