@@ -5,7 +5,8 @@ class Database:
     def conexaoBD(self): #retorna uma conexao com o BD
         #sensores temperatura DisnelLab2019
         #return pymysql.connect(db='iot_count_people', user='ViFaRi', passwd='topRedCom@2019')
-        return pymysql.connect(db='iot_count_people', user='root', passwd='root')
+        #return pymysql.connect(db='iot_count_people', user='root', passwd='root')
+        return pymysql.connect(db='iot_count_people', user='temperatura', passwd='DisnelLab2019')
 
 
     def seachNode(self,id):

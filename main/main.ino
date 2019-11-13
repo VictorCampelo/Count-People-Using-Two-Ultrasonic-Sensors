@@ -51,10 +51,10 @@
 const char* ssid = "UFPI";
 const char* password = "";
 //porta 5000 do protocolo TCP, deve ser a mesma utilizada pelo servidor
-const uint16_t port = 9999;
+const uint16_t port = 9998;
 //endereço ip, deve ser o mesmo utilizado pelo servidor
 const char * host = "10.94.15.69";
-ESP8266WebServer server(80);   //instantiate server at port 80 (http port)
+//ESP8266WebServer server(80);   //instantiate server at port 80 (http port)
 EventLog EventLogger;
 
 String page = "";
@@ -97,14 +97,14 @@ void setup() {
   pinMode(INSIDE_SR04_ECHO, INPUT);
   pinMode(OUTSIDE_SR04_TRIG, OUTPUT);
   pinMode(OUTSIDE_SR04_ECHO, INPUT);
-  //connectWifi();
-  wifiMultiConecte();
+  connectWifi();
+  //wifiMultiConnect();
   digitalWrite(BUZZER, HIGH);
   delay(50);
   digitalWrite(BUZZER, LOW);
   delay(100);
 
-  connectServe();
+  //connectServe();
 
   int i = 0;
   int mn = 0;
@@ -275,8 +275,10 @@ void wifiMultiConnect(){
   WiFiMulti.addAP("UFPI", "");
   
   //enquanto o cliente não estiver conectado, escreve "."
-  while (WiFiMulti.run() != WL_CONNECTED) 
-   Serial.print(".");  
+  while (WiFiMulti.run() != WL_CONNECTED){
+    Serial.print(".");
+    yield(); 
+  }  
 }
 
 void connectWifi() {
@@ -296,35 +298,35 @@ void connectWifi() {
   Serial.println(WiFi.localIP());
 }
 
-void connectServe() {
-  server.on("/data.txt", []() {
-    sprintf(text, "<p>Número de pessoas: %d Pessoas<p>Entraram: %d pessoas<p>Sairam: %d pessoas<p>Last PIR detection: %d s ago", count, pIn, pOut, ((int64_t)(LastPIRDetection - millis()) / 1000));
-    server.send(200, "text/html", text);
-  });
-
-  //std::bind(func* a, args) creates a 0-arg function equivalent to a(args)
-  server.on(F("/logs/"), std::bind(&EventLog::SendLogs, &EventLogger, &server));
-  server.on("/", []() {
-    page = "<h1>PIR Sensor to NodeMCU/h1><h1>Data:</h1> <h1 id=\"data\">""</h1>\r\n";
-    page += "<script>\r\n";
-    page += "var x = setInterval(function() {loadData(\"data.txt\",updateData)}, 1000);\r\n";
-    page += "function loadData(url, callback){\r\n";
-    page += "var xhttp = new XMLHttpRequest();\r\n";
-    page += "xhttp.onreadystatechange = function(){\r\n";
-    page += " if(this.readyState == 4 && this.status == 200){\r\n";
-    page += " callback.apply(xhttp);\r\n";
-    page += " }\r\n";
-    page += "};\r\n";
-    page += "xhttp.open(\"GET\", url, true);\r\n";
-    page += "xhttp.send();\r\n";
-    page += "}\r\n";
-    page += "function updateData(){\r\n";
-    page += " document.getElementById(\"data\").innerHTML = this.responseText;\r\n";
-    page += "}\r\n";
-    page += "</script>\r\n";
-    server.send(200, "text/html", page);
-  });
-
-  server.begin();
-  Serial.println("Web server started!");
-}
+//void connectServe() {
+//  server.on("/data.txt", []() {
+//    sprintf(text, "<p>Número de pessoas: %d Pessoas<p>Entraram: %d pessoas<p>Sairam: %d pessoas<p>Last PIR detection: %d s ago", count, pIn, pOut, ((int64_t)(LastPIRDetection - millis()) / 1000));
+//    server.send(200, "text/html", text);
+//  });
+//
+//  //std::bind(func* a, args) creates a 0-arg function equivalent to a(args)
+//  server.on(F("/logs/"), std::bind(&EventLog::SendLogs, &EventLogger, &server));
+//  server.on("/", []() {
+//    page = "<h1>PIR Sensor to NodeMCU/h1><h1>Data:</h1> <h1 id=\"data\">""</h1>\r\n";
+//    page += "<script>\r\n";
+//    page += "var x = setInterval(function() {loadData(\"data.txt\",updateData)}, 1000);\r\n";
+//    page += "function loadData(url, callback){\r\n";
+//    page += "var xhttp = new XMLHttpRequest();\r\n";
+//    page += "xhttp.onreadystatechange = function(){\r\n";
+//    page += " if(this.readyState == 4 && this.status == 200){\r\n";
+//    page += " callback.apply(xhttp);\r\n";
+//    page += " }\r\n";
+//    page += "};\r\n";
+//    page += "xhttp.open(\"GET\", url, true);\r\n";
+//    page += "xhttp.send();\r\n";
+//    page += "}\r\n";
+//    page += "function updateData(){\r\n";
+//    page += " document.getElementById(\"data\").innerHTML = this.responseText;\r\n";
+//    page += "}\r\n";
+//    page += "</script>\r\n";
+//    server.send(200, "text/html", page);
+//  });
+//
+//  server.begin();
+//  Serial.println("Web server started!");
+//}

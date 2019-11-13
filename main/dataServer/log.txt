@@ -1,0 +1,19 @@
+  Err: (1146, "Table 'iot_count_people.nodes' doesn't exist") in day2019-11-13 11:59:04.504945
+  Err: (1146, "Table 'iot_count_people.nodes' doesn't exist") in day2019-11-13 11:59:08.234158
+  Err: (1054, "Unknown column 'id_node' in 'field list'") in day2019-11-13 12:01:19.319656
+  Err: can only concatenate str (not "datetime.datetime") to str in day2019-11-13 12:02:01.130047
+  Err: can only concatenate str (not "datetime.datetime") to str in day try 22019-11-13 12:04:12.258547
+  Err: can only concatenate str (not "datetime.datetime") to str in day try 22019-11-13 12:05:41.953677
+  Err: can only concatenate str (not "datetime.datetime") to str in day try 22019-11-13 12:09:01.735104
+  Err: can only concatenate str (not "datetime.datetime") to str in day try 22019-11-13 12:09:03.749219
+  Err: can only concatenate str (not "datetime.datetime") to str in day try 22019-11-13 12:09:25.766479
+  Err: can only concatenate str (not "datetime.datetime") to str in day try 22019-11-13 12:09:27.984606
+  Err: can only concatenate str (not "datetime.datetime") to str in day try 22019-11-13 12:09:37.242135
+  Err: can only concatenate str (not "datetime.datetime") to str in day try 22019-11-13 12:09:39.029237
+  Err: can only concatenate str (not "float") to str in day try 21573654470.295897
+  Err: can only concatenate str (not "float") to str in day try 21573654531.831416
+  Err: can only concatenate str (not "int") to str in day try 21573654909.816036
+  Err: (1292, "Incorrect datetime value: '1573655068.691123' for column 'dtime' at row 1") in day try 21573655068.729125
+  Err: (1292, "Incorrect datetime value: '13/11/2019 12:29:45' for column 'dtime' at row 1") in day try 213/11/2019 12:29:45
+  Err: (1292, "Incorrect datetime value: '13/11/2019 12:30:42' for column 'dtime' at row 1") in day try 213/11/2019 12:30:42
+  Err: (1292, "Incorrect datetime value: '13/11/2019 12:30:47' for column 'dtime' at row 1") in day try 213/11/2019 12:30:47
