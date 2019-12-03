@@ -73,6 +73,9 @@ int state_in = 0;
 int flag = 0;
 int state_out = 0;
 
+long dist_in;
+long dist_out;
+
 ESP8266WiFiMulti WiFiMulti; //cria uma instância da classe ESP8266WiFiMulti
 IPAddress local_IP(192, 168, 10, 110); //Cria uma instância da classe IPAddress e define o ip do servidor
 
@@ -145,23 +148,22 @@ int64_t LastPIRDetection;
 void loop() {
 
   bool taskran = false;
-  long dist_in;
-  //delay(20);
+
+  delay(20);
   dist_in = Inside_SR04.ping_cm();
-  long dist_out;
-  //delay(20);
+  delay(20);
   dist_out = Outside_SR04.ping_cm();
 
-  Serial.print("Sensor in:");
   Serial.println(dist_in);
-  Serial.print("Sensor out:");
   Serial.println(dist_out);
   //this fuction above not is more necessary yet
   //server.handleClient();
 
   if (dist_in < in && dist_in < inP && dist_in < inL) {
     state_in = 1;
-    while (state_in == 1) {
+    int limit = 100;
+    while (state_in == 1 && limit >= 0) {
+      limit--;
       delay(20);
       dist_out = Outside_SR04.ping_cm();
       if (dist_out < out && dist_out < outP && dist_out < outL) {
@@ -181,36 +183,38 @@ void loop() {
           while (dist_in < in && dist_in < inP && dist_in < inL) {
             delay(20);
             dist_in = Inside_SR04.ping_cm();
+            state_in = 0;
             yield();
           }
           count += 1;
           pIn += 1;
-          digitalWrite(BUZZER, HIGH);
-          delay(50);
-          digitalWrite(BUZZER, LOW);
+//          digitalWrite(BUZZER, HIGH);
+//          delay(50);
+//          digitalWrite(BUZZER, LOW);
           Serial.print("count:");
           Serial.println(count);
           sendDataToDatabase(count);
-          delay(1000); // pause for 1/2 second
         }
         return;
       }
-      delay(20);
-      dist_in = Inside_SR04.ping_cm();
-      if (dist_in < in && dist_in < inP && dist_in < inL) {
-        state_in = 1;
-      }
-      else {
-        return;
-      }
+//      delay(20);
+//      dist_in = Inside_SR04.ping_cm();
+//      if (dist_in < in && dist_in < inP && dist_in < inL) {
+//        state_in = 1;
+//      }
+//      else {
+//        return;
+//      }
       yield();
     }
   }
 
   else if (dist_out < out && dist_out < outP && dist_out < outL) {
     state_out = 1;
-    while (state_out == 1) {
+    int limit = 100;
+    while (state_out == 1 && limit >= 0) {
       delay(20);
+      limit--;
       dist_in = Inside_SR04.ping_cm();
       if (dist_in < in && dist_in < inP && dist_in < inL) {
         state_in = 1;
@@ -233,23 +237,22 @@ void loop() {
           }
           count -= 1;
           pOut += 1;
-          digitalWrite(BUZZER, HIGH);
-          delay(50);
-          digitalWrite(BUZZER, LOW);
+//          digitalWrite(BUZZER, HIGH);
+//          delay(50);
+//          digitalWrite(BUZZER, LOW);
           Serial.print("count:");
           Serial.println(count);
           sendDataToDatabase(count);
-          delay(1000); // pause for 1/2 second
         }
         return;
       }
-      dist_out = Outside_SR04.ping_cm();
-      if (dist_out < out && dist_out < outP && dist_out < outL) {
-        state_out = 1;
-      }
-      else {
-        return;
-      }
+//      dist_out = Outside_SR04.ping_cm();
+//      if (dist_out < out && dist_out < outP && dist_out < outL) {
+//        state_out = 1;
+//      }
+//      else {
+//        return;
+//      }
       yield();
     }
   }
