@@ -9,7 +9,6 @@ def dateTime():
     :return: Retorna a data e a hora do PC no momento
     '''
     timestamp = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-    print(type(timestamp))
     return timestamp
 
 
@@ -94,7 +93,7 @@ def main():
             if not n_PeopleIno: continue
 
             msg = controller(n_PeopleIno)
-            print(msg[0])
+            print(msg[1])
             send_data_to_BD(msg)
 
         except Exception as err:
